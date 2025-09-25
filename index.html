@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ทดสอب WebView Bridge</title>
+    <title>ทดสอบ WebView Bridge</title>
     <style>
         * {
             margin: 0;
@@ -170,9 +170,9 @@
         </div>
         
         <div class="button-grid">
-            <button class="close-btn" onclick="testCloseApp()">
-                <span class="emoji">❌</span>
-                ปิดแอป Flutter
+            <button class="close-btn" onclick="testRegisterSuccess()">
+                <span class="emoji">✅</span>
+                ส่ง REGISTER_SUCCESS
             </button>
             
             <button class="toast-btn" onclick="testShowToast()">
@@ -241,18 +241,25 @@
             addLog('Flutter Bridge เชื่อมต่อสำเร็จ!', 'success');
         };
 
-        // ฟังก์ชันทดสอบปิดแอป
-        function testCloseApp() {
-            addLog('กำลังทดสอบปิดแอป...', 'info');
+        // ฟังก์ชันส่ง REGISTER_SUCCESS callback
+        function testRegisterSuccess() {
+            addLog('กำลังส่ง REGISTER_SUCCESS callback...', 'info');
+            
             if (typeof window.closeApp === 'function') {
-                addLog('เรียกใช้ window.closeApp()', 'success');
-                window.closeApp();
+                addLog('เรียกใช้ window.closeApp() พร้อม REGISTER_SUCCESS', 'success');
+                // ส่ง REGISTER_SUCCESS แทนการปิดแอปโดยตรง
+                if (typeof window.sendCallback === 'function') {
+                    window.sendCallback('REGISTER_SUCCESS');
+                } else {
+                    // fallback: อาจจะส่งผ่าน closeApp parameter หรือ global callback
+                    window.closeApp('REGISTER_SUCCESS');
+                }
             } else if (typeof FlutterApp !== 'undefined') {
-                addLog('เรียกใช้ FlutterApp.postMessage("close")', 'REGISTER_SUCCESS');
-                FlutterApp.postMessage('close');
+                addLog('เรียกใช้ FlutterApp.postMessage("REGISTER_SUCCESS")', 'success');
+                FlutterApp.postMessage('REGISTER_SUCCESS');
             } else {
                 addLog('ไม่พบ Flutter Bridge - ทดสอบในเบราว์เซอร์ปกติ', 'warning');
-                alert('🚀 หากนี่คือ Flutter WebView แอปจะปิดตอนนี้!');
+                alert('📱 ส่ง Callback: REGISTER_SUCCESS');
             }
         }
 
