@@ -172,7 +172,7 @@
         <div class="button-grid">
             <button class="close-btn" onclick="testRegisterSuccess()">
                 <span class="emoji">✅</span>
-                ส่ง {\"success\":true,\"open_page\":\"TICKET\"}
+                ส่ง Response Call Back
             </button>
             
             <button class="toast-btn" onclick="testShowToast()">
@@ -243,10 +243,10 @@
 
         // ฟังก์ชันส่ง {\"success\":true,\"open_page\":\"TICKET\"} callback
         function testRegisterSuccess() {
-            addLog('กำลังส่ง {\"success\":true,\"open_page\":\"TICKET\"} callback...', 'info');
+            addLog('กำลังส่ง response callback...', 'info');
             
             if (typeof window.closeApp === 'function') {
-                addLog('เรียกใช้ window.closeApp() พร้อม {\"success\":true,\"open_page\":\"TICKET\"}', 'success');
+                addLog('เรียกใช้ window.closeApp() พร้อม response callback', 'success');
                 // ส่ง {\"success\":true,\"open_page\":\"TICKET\"} แทนการปิดแอปโดยตรง
                 if (typeof window.sendCallback === 'function') {
                     window.sendCallback('{\"success\":true,\"open_page\":\"TICKET\"}');
@@ -259,7 +259,7 @@
                 FlutterApp.postMessage('{\"success\":true,\"open_page\":\"TICKET\"}');
             } else {
                 addLog('ไม่พบ Flutter Bridge - ทดสอบในเบราว์เซอร์ปกติ', 'warning');
-                alert('📱 ส่ง Callback: {\"success\":true,\"open_page\":\"TICKET\"}');
+                alert('📱 ส่ง Callback: response callback');
             }
         }
 
