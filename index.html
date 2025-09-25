@@ -172,7 +172,7 @@
         <div class="button-grid">
             <button class="close-btn" onclick="testRegisterSuccess()">
                 <span class="emoji">✅</span>
-                ส่ง REGISTER_SUCCESS
+                ส่ง {\"success\":true,\"open_page\":\"TICKET\"}
             </button>
             
             <button class="toast-btn" onclick="testShowToast()">
@@ -241,25 +241,25 @@
             addLog('Flutter Bridge เชื่อมต่อสำเร็จ!', 'success');
         };
 
-        // ฟังก์ชันส่ง REGISTER_SUCCESS callback
+        // ฟังก์ชันส่ง {\"success\":true,\"open_page\":\"TICKET\"} callback
         function testRegisterSuccess() {
-            addLog('กำลังส่ง REGISTER_SUCCESS callback...', 'info');
+            addLog('กำลังส่ง {\"success\":true,\"open_page\":\"TICKET\"} callback...', 'info');
             
             if (typeof window.closeApp === 'function') {
-                addLog('เรียกใช้ window.closeApp() พร้อม REGISTER_SUCCESS', 'success');
-                // ส่ง REGISTER_SUCCESS แทนการปิดแอปโดยตรง
+                addLog('เรียกใช้ window.closeApp() พร้อม {\"success\":true,\"open_page\":\"TICKET\"}', 'success');
+                // ส่ง {\"success\":true,\"open_page\":\"TICKET\"} แทนการปิดแอปโดยตรง
                 if (typeof window.sendCallback === 'function') {
-                    window.sendCallback('REGISTER_SUCCESS');
+                    window.sendCallback('{\"success\":true,\"open_page\":\"TICKET\"}');
                 } else {
                     // fallback: อาจจะส่งผ่าน closeApp parameter หรือ global callback
-                    window.closeApp('REGISTER_SUCCESS');
+                    window.closeApp('{\"success\":true,\"open_page\":\"TICKET\"}');
                 }
             } else if (typeof FlutterApp !== 'undefined') {
-                addLog('เรียกใช้ FlutterApp.postMessage("REGISTER_SUCCESS")', 'success');
-                FlutterApp.postMessage('REGISTER_SUCCESS');
+                addLog('เรียกใช้ FlutterApp.postMessage("{\"success\":true,\"open_page\":\"TICKET\"}")', 'success');
+                FlutterApp.postMessage('{\"success\":true,\"open_page\":\"TICKET\"}');
             } else {
                 addLog('ไม่พบ Flutter Bridge - ทดสอบในเบราว์เซอร์ปกติ', 'warning');
-                alert('📱 ส่ง Callback: REGISTER_SUCCESS');
+                alert('📱 ส่ง Callback: {\"success\":true,\"open_page\":\"TICKET\"}');
             }
         }
 
