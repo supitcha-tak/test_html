@@ -248,7 +248,7 @@
                 addLog('เรียกใช้ window.closeApp()', 'success');
                 window.closeApp();
             } else if (typeof FlutterApp !== 'undefined') {
-                addLog('เรียกใช้ FlutterApp.postMessage("close")', 'success');
+                addLog('เรียกใช้ FlutterApp.postMessage("close")', 'REGISTER_SUCCESS');
                 FlutterApp.postMessage('close');
             } else {
                 addLog('ไม่พบ Flutter Bridge - ทดสอบในเบราว์เซอร์ปกติ', 'warning');
