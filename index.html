@@ -41,32 +41,6 @@
             font-size: 16px;
         }
         
-        .status {
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: bold;
-        }
-        
-        .status.checking {
-            background: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeaa7;
-        }
-        
-        .status.connected {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .status.not-connected {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        
         .button-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -100,21 +74,6 @@
         .close-btn {
             background: linear-gradient(45deg, #ff6b6b, #ee5a52);
             color: white;
-        }
-        
-        .toast-btn {
-            background: linear-gradient(45deg, #51cf66, #40c057);
-            color: white;
-        }
-        
-        .back-btn {
-            background: linear-gradient(45deg, #339af0, #228be6);
-            color: white;
-        }
-        
-        .info-btn {
-            background: linear-gradient(45deg, #ffd43b, #fab005);
-            color: #333;
         }
         
         .test-section {
@@ -164,30 +123,11 @@
     <div class="container">
         <h1>🌉 WebView Bridge Test</h1>
         <p class="subtitle">ทดสอบการสื่อสารระหว่างเว็บกับ Flutter App</p>
-        
-        <div id="status" class="status checking">
-            🔄 กำลังตรวจสอบการเชื่อมต่อ...
-        </div>
-        
+
         <div class="button-grid">
             <button class="close-btn" onclick="testRegisterSuccess()">
                 <span class="emoji">✅</span>
                 ส่ง Response Call Back
-            </button>
-            
-            <button class="toast-btn" onclick="testShowToast()">
-                <span class="emoji">💬</span>
-                แสดงข้อความ Toast
-            </button>
-            
-            <button class="back-btn" onclick="testGoBack()">
-                <span class="emoji">⬅️</span>
-                กลับหน้าก่อน
-            </button>
-            
-            <button class="info-btn" onclick="testAppInfo()">
-                <span class="emoji">ℹ️</span>
-                ข้อมูลแอป
             </button>
         </div>
         
@@ -201,13 +141,7 @@
     </div>
 
     <script>
-        // ตัวแปรสำหรับเก็บสถานะ
-        let isFlutterConnected = false;
-        let logCount = 0;
-
-        // ฟังก์ชันสำหรับบันทึก log
         function addLog(message, type = 'info') {
-            logCount++;
             const timestamp = new Date().toLocaleTimeString('th-TH');
             const logContainer = document.getElementById('logs');
             const logItem = document.createElement('div');
@@ -225,148 +159,34 @@
             logContainer.scrollTop = logContainer.scrollHeight;
         }
 
-        // ฟังก์ชันล้าง logs
         function clearLogs() {
             document.getElementById('logs').innerHTML = '';
-            logCount = 0;
             addLog('Logs ถูกล้างแล้ว', 'info');
         }
 
-        // ฟังก์ชันที่จะถูกเรียกเมื่อ Flutter พร้อม
-        window.onFlutterReady = function() {
-            isFlutterConnected = true;
-            const statusEl = document.getElementById('status');
-            statusEl.className = 'status connected';
-            statusEl.innerHTML = '✅ เชื่อมต่อกับ Flutter แล้ว';
-            addLog('Flutter Bridge เชื่อมต่อสำเร็จ!', 'success');
-        };
-
-        // ฟังก์ชันส่ง {\"success\":true,\"open_page\":\"TICKET\"} callback
         function testRegisterSuccess() {
             addLog('กำลังส่ง response callback...', 'info');
             
             if (typeof window.closeApp === 'function') {
                 addLog('เรียกใช้ window.closeApp() พร้อม response callback', 'success');
-                // ส่ง {\"success\":true,\"open_page\":\"TICKET\"} แทนการปิดแอปโดยตรง
                 if (typeof window.sendCallback === 'function') {
-                    window.sendCallback('{\"success\":true,\"open_page\":\"TICKET\"}');
+                    window.sendCallback('{"success":true,"open_page":"TICKET"}');
                 } else {
-                    // fallback: อาจจะส่งผ่าน closeApp parameter หรือ global callback
-                    window.closeApp('{\"success\":true,\"open_page\":\"TICKET\"}');
+                    window.closeApp('{"success":true,"open_page":"TICKET"}');
                 }
             } else if (typeof FlutterApp !== 'undefined') {
-                addLog('เรียกใช้ FlutterApp.postMessage("{\"success\":true,\"open_page\":\"TICKET\"}")', 'success');
-                FlutterApp.postMessage('{\"success\":true,\"open_page\":\"TICKET\"}');
+                addLog('เรียกใช้ FlutterApp.postMessage("{"success":true,"open_page":"TICKET"}")', 'success');
+                FlutterApp.postMessage('{"success":true,"open_page":"TICKET"}');
             } else {
                 addLog('ไม่พบ Flutter Bridge - ทดสอบในเบราว์เซอร์ปกติ', 'warning');
                 alert('📱 ส่ง Callback: response callback');
             }
         }
 
-        // ฟังก์ชันทดสอบแสดง Toast
-        function testShowToast() {
-            const messages = [
-                'สวัสดีจากเว็บไซต์! 👋',
-                'Toast Message ทำงานแล้ว! 🎉',
-                'WebView Bridge เจ๋งมาก! ⚡',
-                'ข้อความจากหน้าเว็บ 📱'
-            ];
-            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-            
-            addLog(`กำลังส่ง Toast: "${randomMessage}"`, 'info');
-            
-            if (typeof window.showToast === 'function') {
-                addLog('เรียกใช้ window.showToast()', 'success');
-                window.showToast(randomMessage);
-            } else if (typeof FlutterApp !== 'undefined') {
-                addLog('เรียกใช้ FlutterApp.postMessage("toast:...")', 'success');
-                FlutterApp.postMessage('toast:' + randomMessage);
-            } else {
-                addLog('ไม่พบ Flutter Bridge - ทดสอบในเบราว์เซอร์ปกติ', 'warning');
-                alert('📱 Toast: ' + randomMessage);
-            }
-        }
-
-        // ฟังก์ชันทดสอบกลับหน้าก่อน
-        function testGoBack() {
-            addLog('กำลังทดสอบกลับหน้าก่อน...', 'info');
-            if (typeof window.goBack === 'function') {
-                addLog('เรียกใช้ window.goBack()', 'success');
-                window.goBack();
-            } else if (typeof FlutterApp !== 'undefined') {
-                addLog('เรียกใช้ FlutterApp.postMessage("back")', 'success');
-                FlutterApp.postMessage('back');
-            } else {
-                addLog('ไม่พบ Flutter Bridge - ใช้ history.back() แทน', 'warning');
-                if (window.history.length > 1) {
-                    window.history.back();
-                } else {
-                    alert('🔙 ไม่มีหน้าก่อนหน้าให้กลับ');
-                }
-            }
-        }
-
-        // ฟังก์ชันทดสอบข้อมูลแอป
-        function testAppInfo() {
-            const userAgent = navigator.userAgent;
-            const isWebView = userAgent.includes('wv') || 
-                             typeof FlutterApp !== 'undefined' || 
-                             typeof window.flutter_inappwebview !== 'undefined';
-            
-            let info = `
-🌐 User Agent: ${userAgent}
-📱 Is WebView: ${isWebView ? 'Yes' : 'No'}
-🔗 Flutter Connected: ${isFlutterConnected ? 'Yes' : 'No'}
-📏 Screen: ${window.screen.width}x${window.screen.height}
-🪟 Window: ${window.innerWidth}x${window.innerHeight}
-            `.trim();
-            
-            addLog('ดูข้อมูลแอป', 'info');
-            alert(info);
-        }
-
-        // ตรวจสอบการเชื่อมต่อ
-        function checkConnection() {
-            setTimeout(function() {
-                if (!isFlutterConnected) {
-                    const statusEl = document.getElementById('status');
-                    if (typeof FlutterApp !== 'undefined') {
-                        statusEl.className = 'status connected';
-                        statusEl.innerHTML = '⚡ พบ FlutterApp (รอ JavaScript Bridge)';
-                        addLog('พบ FlutterApp แต่ยังไม่ได้ inject functions', 'warning');
-                    } else {
-                        statusEl.className = 'status not-connected';
-                        statusEl.innerHTML = '❌ ไม่ได้อยู่ใน Flutter WebView';
-                        addLog('ไม่พบ FlutterApp - กำลังทำงานในเบราว์เซอร์ปกติ', 'error');
-                    }
-                }
-            }, 2000);
-        }
-
-        // เริ่มการตรวจสอบเมื่อโหลดหน้าเสร็จ
         document.addEventListener('DOMContentLoaded', function() {
             addLog('หน้าเว็บโหลดเสร็จแล้ว', 'info');
-            checkConnection();
         });
 
-        // ตรวจสอบ Flutter functions ทุก 1 วินาที
-        const checkInterval = setInterval(function() {
-            if (typeof window.closeApp === 'function' && !isFlutterConnected) {
-                window.onFlutterReady && window.onFlutterReady();
-                clearInterval(checkInterval);
-            }
-        }, 1000);
-
-        // เพิ่ม event listener สำหรับการ focus/blur
-        window.addEventListener('focus', function() {
-            addLog('หน้าต่างได้รับ focus', 'info');
-        });
-
-        window.addEventListener('blur', function() {
-            addLog('หน้าต่างสูญเสีย focus', 'info');
-        });
-
-        // เริ่มต้น logs
         addLog('🚀 WebView Bridge Test เริ่มต้นแล้ว', 'success');
     </script>
 </body>
